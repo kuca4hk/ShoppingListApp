@@ -1,37 +1,32 @@
 const mongoose = require('mongoose');
+const itemSchema = require('./itemsModel');
 
 
-const shoppingListSchema = mongoose.Schema(
+const shoppingListSchema = new mongoose.Schema(
     {
         creator: {
-            type: mongoose.Schema.Types.ObjectId,
-            required: true,
-            ref: 'User',
+            type: String,
+            required: [true, 'Please add the creator name'],
+            maxLength: [50, 'Creator name cannot be more than 50 characters'],
         },
         title: {
             type: String,
             required: [true, 'Please add the shopping list title'],
+            maxLength: [50, 'Title cannot be more than 50 characters'],
         },
-        items: [
-            {
-                name: {
-                    type: String,
-                    required: [true, 'Please add the item name'],
+        items: {
+            type: [itemSchema],
+            validate: [
+                {
+                    validator: function (value) {
+                        return value.length > 0;
+                    },
+                    message: 'Please add at least one item to the shopping list',
                 },
-                quantity: {
-                    type: Number,
-                    required: [true, 'Please add the item quantity'],
-                },
-            },
-        ],
-        users: [
-            {
-                user: {
-                    type: mongoose.Schema.Types.ObjectId,
-                    ref: 'User',
-                },
-            },
-        ]
+            ],
+        },
+    },{
+        timestamps: true,
     }
 )
 

@@ -1,104 +1,78 @@
 const asyncHandler = require("express-async-handler");
 const ShoppingList = require("../models/shoppingListModel");
-const User = require("../models/userModel");
 const mongoose = require("mongoose");
+const {
+    VALIDATION_ERROR,
+    NOT_FOUND,
+    SERVER_ERROR
+} = require("../config/constants");
 
+// @desc    Create new shopping list
+// @route   POST /api/shopping-lists
 const createShoppingList = asyncHandler(async (req, res) => {
-        const { title, items, users } = req.body;
+    const { creator, title, items } = req.body;
 
-        // Find all relevant user objects based on the provided emails
-        const userObjects = await Promise.all(users.map(async ({ email }) => {
-            const user = await User.findOne({ email });
-            if (!user) {
-                res.status(404);
-                throw new Error(`User with email ${email} not found`);
-            }
-            return user._id;
-        }));
+    if (!title || title.length > 50) {
+        res.status(VALIDATION_ERROR);
+        throw new Error("Title is required and must be under 50 characters");
+    }
 
-        // Create a new shopping list
-        const shoppingList = await ShoppingList.create({
-            title,
-            items,
-            users: userObjects,
-            creator: req.user.id,
-        });
+    if (!items || !Array.isArray(items) || items.length === 0) {
+        res.status(VALIDATION_ERROR);
+        throw new Error("At least one item is required in the shopping list");
+    }
 
-        if (shoppingList) {
-            res.status(201).json(shoppingList);
-        } else {
-            res.status(400);
-            throw new Error("Invalid shopping list data");
-        }
+    const shoppingList = new ShoppingList({ creator, title, items });
+    const savedList = await shoppingList.save();
+
+    res.status(201).json(savedList);
 });
 
-const getMyCreatedShoppingLists = asyncHandler(async (req, res) => {
-    try {
+// @desc    Get all shopping lists
+// @route   GET /api/shopping-lists
+const getAllShoppingLists = asyncHandler(async (req, res) => {
+    const allShoppingLists = await ShoppingList.find();
 
-        const shoppingLists = await ShoppingList.find({ creator: req.user.id })
-            .populate('creator', '_id email')
-            .lean();
+    if (!allShoppingLists || allShoppingLists.length === 0) {
+        res.status(NOT_FOUND);
+        throw new Error("No shopping lists found");
+    }
 
-        res.json(shoppingLists);
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: error.message });
-    }
-});
-// TODO - not working
-const getShoppingListsUsers = asyncHandler(async (req, res) => {
-    try {
-        const shoppingLists = await ShoppingList.find({ users: req.user.id })
-        res.json(shoppingLists);
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
+    res.status(200).json(allShoppingLists);
 });
 
-const updateShoppingList = asyncHandler(async (req, res) => {
-    try {
-        const { title, items, users } = req.body;
-        const shoppingList = await ShoppingList.findById({
-            _id: req.params.id,
-            creator: req.user.id,
-        });
-        if (shoppingList) {
-            shoppingList.title = title;
-            shoppingList.items = items;
-            shoppingList.users = users;
-            const updatedShoppingList = await shoppingList.save();
-            res.json(updatedShoppingList);
-        } else {
-            res.status(404);
-            throw new Error("Shopping list not found");
-        }
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
-});
+// @desc    Edit shopping list
+// @route   PUT /api/shopping-lists/:id
+const editShoppingList = asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    const { title, items } = req.body;
 
-const deleteShoppingList = asyncHandler(async (req, res) => {
-    try {
-        const shoppingList = await ShoppingList.findById({
-            _id: req.params.id,
-            creator: req.user.id,
-        });
-        if (shoppingList) {
-            await shoppingList.remove();
-            res.json({ message: "Shopping list removed" });
-        } else {
-            res.status(404);
-            throw new Error("Shopping list not found");
-        }
-    } catch (error) {
-        res.status(500).json({ message: error.message });
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        res.status(VALIDATION_ERROR);
+        throw new Error("Invalid shopping list ID");
     }
+
+    const shoppingList = await ShoppingList.findById(id);
+    if (!shoppingList) {
+        res.status(NOT_FOUND);
+        throw new Error("Shopping list not found");
+    }
+
+    if (title && title.length > 50) {
+        res.status(VALIDATION_ERROR);
+        throw new Error("Title must be under 50 characters");
+    }
+
+    shoppingList.title = title || shoppingList.title;
+    shoppingList.items = items || shoppingList.items;
+
+    const updatedList = await shoppingList.save();
+
+    res.status(200).json(updatedList);
 });
 
 module.exports = {
     createShoppingList,
-    getMyCreatedShoppingLists,
-    getShoppingListsUsers,
-    updateShoppingList,
-    deleteShoppingList,
+    getAllShoppingLists,
+    editShoppingList,
 };
