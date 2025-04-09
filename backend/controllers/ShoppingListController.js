@@ -1,4 +1,4 @@
-const {getAllLists, createList} = require("../DAO/methods");
+const {getAllLists, createList, editList} = require("../DAO/methods");
 
 const asyncHandler = require("express-async-handler");
 const ShoppingList = require("../models/shoppingListModel");
