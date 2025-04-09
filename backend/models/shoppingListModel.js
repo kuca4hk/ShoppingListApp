@@ -7,6 +7,7 @@ const shoppingListSchema = new mongoose.Schema(
         creator: {
             type: String,
             required: [true, 'Please add the creator name'],
+            unique: true,
             maxLength: [50, 'Creator name cannot be more than 50 characters'],
         },
         title: {

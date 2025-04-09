@@ -5,7 +5,7 @@ import NotFound from "./pages/NotFound";
 
 export const routing = [
     {
-        path: "/dash",
+        path: "/",
         element: <Dashboard />,
     },
     {

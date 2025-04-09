@@ -1,3 +1,5 @@
+const {getAllLists, createList} = require("../DAO/methods");
+
 const asyncHandler = require("express-async-handler");
 const ShoppingList = require("../models/shoppingListModel");
 const mongoose = require("mongoose");
@@ -6,6 +8,7 @@ const {
     NOT_FOUND,
     SERVER_ERROR
 } = require("../config/constants");
+
 
 // @desc    Create new shopping list
 // @route   POST /api/shopping-lists
@@ -22,21 +25,22 @@ const createShoppingList = asyncHandler(async (req, res) => {
         throw new Error("At least one item is required in the shopping list");
     }
 
-    const shoppingList = new ShoppingList({ creator, title, items });
-    const savedList = await shoppingList.save();
+    const shoppingList = await createList(creator, items, title);
 
-    res.status(201).json(savedList);
+    res.status(201).json(shoppingList);
 });
 
 // @desc    Get all shopping lists
 // @route   GET /api/shopping-lists
 const getAllShoppingLists = asyncHandler(async (req, res) => {
-    const allShoppingLists = await ShoppingList.find();
+    const allShoppingLists = await getAllLists();
 
     if (!allShoppingLists || allShoppingLists.length === 0) {
         res.status(NOT_FOUND);
         throw new Error("No shopping lists found");
     }
+
+
 
     res.status(200).json(allShoppingLists);
 });
@@ -66,7 +70,7 @@ const editShoppingList = asyncHandler(async (req, res) => {
     shoppingList.title = title || shoppingList.title;
     shoppingList.items = items || shoppingList.items;
 
-    const updatedList = await shoppingList.save();
+    const updatedList = await createList()
 
     res.status(200).json(updatedList);
 });

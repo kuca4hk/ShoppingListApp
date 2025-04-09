@@ -1,7 +1,7 @@
 import {BrowserRouter, Routes, Route} from 'react-router-dom'
 import Dashboard from "./pages/Dashboard";
 import NotFound from "./pages/NotFound";
-import SharedLayout from "./components/layout/SharedLayout";
+import SharedLayout from "./layout/SharedLayout";
 
 const App = () => {
     return (
