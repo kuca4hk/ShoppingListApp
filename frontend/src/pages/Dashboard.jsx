@@ -1,5 +1,5 @@
 import React from 'react';
-import ShopingListComponenta from "../components/shopingListComponenta";
+import StackComponent from "../components/StackComponent.jsx";
 
 function Dashboard() {
     return (
@@ -10,10 +10,7 @@ function Dashboard() {
             <p>You can add more content here.</p>
             <p>Here are some items:</p>
             <div className="shopping-list">
-                <ShopingListComponenta/>
-                <ShopingListComponenta/>
-                <ShopingListComponenta/>
-                <ShopingListComponenta/>
+                <StackComponent />
             </div>
         </div>
     )

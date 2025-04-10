@@ -1,9 +1,4 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
-}
+/* 🎯 Stylování pouze pro specifické komponenty nebo animace */
 
 .logo {
   height: 6em;
@@ -33,10 +28,12 @@
   }
 }
 
+/* Třída pro demo boxy nebo karty - pokud chceš zachovat */
 .card {
   padding: 2em;
 }
 
+/* Volitelný info text */
 .read-the-docs {
   color: #888;
 }
