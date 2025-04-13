@@ -1,4 +1,4 @@
-const {getAllLists, createList, editList} = require("../DAO/methods");
+const {getAllLists, createList, editList} = require("../DAO/ShoppingListDao");
 
 const asyncHandler = require("express-async-handler");
 const ShoppingList = require("../models/shoppingListModel");
@@ -49,17 +49,11 @@ const getAllShoppingLists = asyncHandler(async (req, res) => {
 // @route   PUT /api/shopping-lists/:id
 const editShoppingList = asyncHandler(async (req, res) => {
     const { id } = req.params;
-    const { title, items } = req.body;
+    const { creator, title, items } = req.body;
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
         res.status(VALIDATION_ERROR);
         throw new Error("Invalid shopping list ID");
-    }
-
-    const shoppingList = await ShoppingList.findById(id);
-    if (!shoppingList) {
-        res.status(NOT_FOUND);
-        throw new Error("Shopping list not found");
     }
 
     if (title && title.length > 50) {
@@ -67,12 +61,17 @@ const editShoppingList = asyncHandler(async (req, res) => {
         throw new Error("Title must be under 50 characters");
     }
 
-    shoppingList.title = title || shoppingList.title;
-    shoppingList.items = items || shoppingList.items;
-
-    const updatedList = await createList()
-
-    res.status(200).json(updatedList);
+    try {
+        const updatedList = await editList(id, { creator, title, items });
+        res.status(200).json(updatedList);
+    } catch (err) {
+        if (err.message === "Shopping list not found") {
+            res.status(NOT_FOUND);
+        } else {
+            res.status(VALIDATION_ERROR);
+        }
+        throw err;
+    }
 });
 
 module.exports = {
