@@ -36,9 +36,9 @@ async function editList(id, updatedData) {
     try {
         if (updatedData.creator || updatedData.title || updatedData.items) {
             validateListInput(
-                updatedData.creator || 'placeholder',
-                updatedData.items || [{}],
-                updatedData.title || 'placeholder'
+                updatedData.creator,
+                updatedData.items,
+                updatedData.title
             );
         }
 

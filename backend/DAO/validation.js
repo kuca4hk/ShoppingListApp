@@ -30,6 +30,10 @@ function validateItemInput(name, quantity) {
         throw new Error("Name, quantity and price are required");
     }
 
+    if (typeof name !== "string" || name.length > 50) {
+        throw new Error("Name must be a string and under 50 characters");
+    }
+
     if (typeof quantity !== "number") {
         throw new Error("Quantity and price must be numbers");
     }

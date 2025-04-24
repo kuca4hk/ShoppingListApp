@@ -46,9 +46,9 @@ const markerItemHandler = asyncHandler(async (req, res) => {
         const item = await toggleItemMarker(id);
         res.status(200).json(item);
     } catch (err) {
-        res.status(VALIDATION_ERROR).json(
+        res.status(NOT_FOUND).json(
             {
-                message: err.message,
+                message: "Item not found",
             }
         )
     }
