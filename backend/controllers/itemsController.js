@@ -17,8 +17,11 @@ const createItemHandler = asyncHandler(async (req, res) => {
         const item = await createItem(name, quantity, price);
         res.status(201).json(item);
     } catch (err) {
-        res.status(VALIDATION_ERROR);
-        throw err;
+        res.status(VALIDATION_ERROR).json(
+            {
+                message: err.message,
+            }
+        );
     }
 });
 
@@ -26,8 +29,11 @@ const getAllItemsHandler = asyncHandler(async (req, res) => {
     const items = await getAllItems();
 
     if (!items || items.length === 0) {
-        res.status(NOT_FOUND);
-        throw new Error("No items found");
+        res.status(NOT_FOUND).json(
+            {
+                message: "No items found",
+            }
+        );
     }
 
     res.status(200).json(items);
@@ -40,8 +46,11 @@ const markerItemHandler = asyncHandler(async (req, res) => {
         const item = await toggleItemMarker(id);
         res.status(200).json(item);
     } catch (err) {
-        res.status(VALIDATION_ERROR);
-        throw err;
+        res.status(VALIDATION_ERROR).json(
+            {
+                message: err.message,
+            }
+        )
     }
 });
 

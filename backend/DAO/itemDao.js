@@ -3,11 +3,11 @@ const { validateItemInput } = require("../DAO/validation");
 const mongoose = require("mongoose");
 
 
-async function createItem(name, quantity, price) {
+async function createItem(name, quantity) {
     try {
-        validateItemInput(name, quantity, price);
+        validateItemInput(name, quantity);
 
-        const newItem = await Item.create({ name, quantity, price });
+        const newItem = await Item.create({ name, quantity});
         return newItem;
     } catch (err) {
         throw err;
