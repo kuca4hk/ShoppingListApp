@@ -1,7 +1,37 @@
 # ShoppingListApp
 
-## For generate Access Token
-Run the following command in terminal
+## BE
+
+Backend projektu se nachází ve složce Backend. Pro spuštění je potřeba mít nainstalované NODE v20, npm 10 a Docker Desktop.
+### Pro spuštění na localu
+
+Musíte být ve složce BE:
 ```bash
-node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"
+  cd backend
 ```
+
+Nainstalování závislostí projektu:
+```bash
+  npm install
+```
+
+Vytvořte si .**env** soubor, bez toho to souboru, nelze spusit backend projektu
+
+```bash
+  cp .env-sample .env
+```
+
+Vyplňte env proměné v .env souboru
+
+Spusťte DB kontejner:
+
+```bash
+  docker compose up db
+```
+
+Spustě server
+
+```bash
+  npm run start
+```
+
