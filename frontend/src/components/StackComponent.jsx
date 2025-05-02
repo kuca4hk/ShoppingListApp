@@ -1,5 +1,5 @@
 import Stack from 'react-bootstrap/Stack';
-import ShopingListComponenta from "./shopingListComponenta.jsx";
+import ShopingListComponenta from "./ShoppingList.jsx";
 
 function StackComponent() {
     return (

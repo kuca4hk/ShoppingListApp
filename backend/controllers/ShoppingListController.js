@@ -1,4 +1,4 @@
-const {getAllLists, createList, editList} = require("../DAO/ShoppingListDao");
+const {getAllLists, createList, editList, deleteList} = require("../DAO/ShoppingListDao");
 
 const asyncHandler = require("express-async-handler");
 const ShoppingList = require("../models/shoppingListModel");
@@ -63,8 +63,31 @@ const editShoppingList = asyncHandler(async (req, res) => {
     }
 });
 
+// @desc    Delete shopping list
+// @route   DELETE /api/shopping-lists/:id
+
+const deleteShoppingList = asyncHandler(async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const deletedList = await deleteList(id);
+        res.status(200).json(deletedList);
+    } catch (err) {
+        if (err.message === "Shopping list not found") {
+            res.status(NOT_FOUND).json({
+                message: err.message,
+            });
+        } else {
+            res.status(VALIDATION_ERROR).json({
+                message: err.message,
+            });
+        }
+        throw err;
+    }
+})
 module.exports = {
     createShoppingList,
     getAllShoppingLists,
     editShoppingList,
+    deleteShoppingList
 };

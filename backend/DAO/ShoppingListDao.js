@@ -58,9 +58,25 @@ async function editList(id, updatedData) {
     }
 }
 
+// DELETE
+async function deleteList(id) {
+    try {
+        const deletedList = await ShoppingList.findByIdAndDelete(id);
+
+        if (!deletedList) {
+            throw new Error('Shopping list not found');
+        }
+
+        return deletedList;
+    } catch (err) {
+        throw err;
+    }
+}
+
 
 module.exports = {
     createList,
     getAllLists,
     editList,
+    deleteList
 };
