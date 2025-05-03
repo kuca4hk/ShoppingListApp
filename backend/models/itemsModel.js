@@ -1,4 +1,6 @@
 const mongoose = require('mongoose');
-const itemSchema = require('./itemsSchema')
+const itemSchema = require('./itemsSchema'); // Import schématu
 
-module.exports = mongoose.model('Item', itemSchema);
+const Item = mongoose.model('Item', itemSchema);
+
+module.exports = Item;

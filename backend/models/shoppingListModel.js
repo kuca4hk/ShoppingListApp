@@ -1,6 +1,5 @@
+// shoppingListModel.js
 const mongoose = require('mongoose');
-const itemSchema = require('./itemsSchema');
-
 
 const shoppingListSchema = new mongoose.Schema(
     {
@@ -15,20 +14,13 @@ const shoppingListSchema = new mongoose.Schema(
             required: [true, 'Please add the shopping list title'],
             maxLength: [50, 'Title cannot be more than 50 characters'],
         },
-        items: {
-            type: [itemSchema],
-            validate: [
-                {
-                    validator: function (value) {
-                        return value.length > 0;
-                    },
-                    message: 'Please add at least one item to the shopping list',
-                },
-            ],
-        },
-    },{
+        items: [{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Item'
+        }]
+    }, {
         timestamps: true,
     }
-)
+);
 
 module.exports = mongoose.model('ShoppingList', shoppingListSchema);

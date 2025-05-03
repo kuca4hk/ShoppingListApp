@@ -68,3 +68,22 @@ export const createShoppingList = async (data) => {
         throw error;
     }
 };
+
+export const updateItemMarker = async (itemId, data) => {
+    try {
+        const response = await fetch(`${API_BASE_URL}/items/${itemId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data)
+        });
+        if (!response.ok) {
+            throw new Error(`Chyba HTTP! status: ${response.status}`);
+        }
+        return await response.json();
+    } catch (error) {
+        console.error('Chyba při označování položky:', error);
+        throw error;
+    }
+};
